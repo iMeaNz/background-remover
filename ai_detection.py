@@ -69,12 +69,15 @@ def main():
 
         input_batch = preprocess_frame(resized_frame)
 
-        mask = segment_frame(model, input_batch, device)
+        model_predictions = segment_frame(model, input_batch, device)
 
-        overlay_frame = get_mask(mask, colors)
+        mask = get_mask(model_predictions, colors)
+
+        resized_frame = cv2.resize(resized_frame, (520, 520))
+        mask = cv2.resize(mask, (520, 520))
 
         cv2.imshow('Original Frame', resized_frame)
-        cv2.imshow('Segmentation Overlay', overlay_frame)
+        cv2.imshow('Segmentation Overlay', mask)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
