@@ -1,6 +1,6 @@
 # Background Remover
 This a school project aiming to implement a real time background remover from a live webcam feed.  
-This background remover project is the culmination of an end-of-semester assignment for the "Image Processing" course, part of the curriculum of the software major of the Chung-Ang University. 
+This background remover project is the culmination of an end-of-semester assignment for the "Image Processing" course, part of the curriculum of the software major at Chung-Ang University. 
 
 
 # Getting Started
@@ -17,10 +17,12 @@ Follow these steps to set up and run the project on your local machine.
 Clone the project repository to your local machine:
 
 ```bash
-git clone https://github.com/your-username/your-project-name.git
-cd your-project-name
+git clone git@github.com:iMeaNz/background-remover.git
+cd background-remover
 ```
 2. **Create a Virtual Environment**
+
+
 Create a Python virtual environment to isolate project dependencies:
 
 ```bash
@@ -46,10 +48,11 @@ pip install -r requirements.txt
 ```
 # Running the Project
 Ensure the virtual environment is active.  
-There is 3 different programs in this repository :
+There is 3 different programs in this repository
 ## Basic mask
-This program is a very naive implementation. The main workflow of the algorithm is to capture the first 10 seconds of the live feed without the subject.   
-This is used to store the static background in the program.  
+This program is a very naive implementation.
+
+The main workflow of the algorithm is to capture the first 10 seconds of the live feed without the subject. This is used to store the static background in the program.  
 
 Then, we simply apply a binary mask onto the current frame with the static background we stored previously.  
 
@@ -61,11 +64,11 @@ python basic_mask.py
 ```
 
 ## Edge detection
-This is a bit more advanced, we use the canny algorithm and p-tile threshold algorithm to convert the current frame to a binary image containing only the edges detected.  
+This is a bit more advanced, we use the canny algorithm and p-tile threshold algorithm to convert the current frame to a binary image containing only the edges of the image.  
 
 Then we find the bounding box of these edges to apply our background removing logic.  
 
-This was interesting, but still not really the desired output, because of box does not perfectly encompass the shape of the subject, and if the background is not unified and contains several edges, the bounding box detection can be scuffed.
+This was interesting, but still not really the desired output, because a box does not perfectly encompass the shape of a person, and if the background is not unified and contains several edges, the bounding box detection can be scuffed.
 
 **How to run**
 ```bash
