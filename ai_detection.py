@@ -8,6 +8,7 @@ from utils import gaussian_blur
 
 # Load the pre-trained DeepLab model for segmentation
 def load_model():
+    print("Loading DeepLabV3 model with MobileNetV3...")
     from torchvision.models.segmentation import DeepLabV3_MobileNet_V3_Large_Weights
     weights = DeepLabV3_MobileNet_V3_Large_Weights.COCO_WITH_VOC_LABELS_V1
     model = torch.hub.load('pytorch/vision:v0.10.0', 'deeplabv3_mobilenet_v3_large', weights=weights)
