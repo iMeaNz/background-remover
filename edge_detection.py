@@ -83,20 +83,22 @@ def main():
         if show_magnitude:
             magnitude_norm = normalize(magnitude)
             cv2.imshow("Magnitude", magnitude_norm)
-        else:
+        elif cv2.getWindowProperty("Magnitude", cv2.WND_PROP_VISIBLE) > 0:
             cv2.destroyWindow("Magnitude")
 
         if show_gradient:
             cv2.imshow("Gradient X", Gx)
             cv2.imshow("Gradient Y", Gy)
         else:
-            cv2.destroyWindow("Gradient X")
-            cv2.destroyWindow("Gradient Y")
+            if cv2.getWindowProperty("Gradient X", cv2.WND_PROP_VISIBLE) > 0:
+                cv2.destroyWindow("Gradient X")
+            if cv2.getWindowProperty("Gradient Y", cv2.WND_PROP_VISIBLE) > 0:
+                cv2.destroyWindow("Gradient Y")
 
         if show_suppressed:
             suppressed_norm = normalize(suppressed)
             cv2.imshow("Suppressed", suppressed_norm)
-        else:
+        elif cv2.getWindowProperty("Suppressed", cv2.WND_PROP_VISIBLE) > 0:
             cv2.destroyWindow("Suppressed")
 
         key = cv2.waitKey(1) & 0xFF
