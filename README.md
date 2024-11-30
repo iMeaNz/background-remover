@@ -7,7 +7,7 @@ This background remover project is the culmination of an end-of-semester assignm
 Follow these steps to set up and run the project on your local machine.
 
 ## Prerequisites
-- Python 3.7+ installed on your system.
+- Python 3.7+ installed on your system. (tested with Python 3.12.7).
 - pip (Python's package installer) installed.
 ## Setup Instructions
 
@@ -75,6 +75,12 @@ This was interesting, but still not really the desired output, because a box doe
 python edge_detection.py
 ```
 
+Options:
+ - m: Toggle magnitude visualization.
+ - g: Toggle gradient visualizations (Gx, Gy).
+ - s: Toggle suppressed visualization.
+ - [ + / - ]: Adjust the edge detection threshold.
+
 ## Artificial intelligence detection
 For this one, we use the [DeepLabV3 model](https://pytorch.org/hub/pytorch_vision_deeplabv3_resnet101/) to detect the person in the image.
 
@@ -86,6 +92,14 @@ This program runs better if you have an NVIDIA graphic card, if not, it will run
 ```bash
 python ai_detection.py
 ```
+Options:
+
+1. Segmentation Overlay: Highlights the person, keeping the original background.
+2. Custom Solid Color Background: Allows setting a solid color background using color sliders.
+3. Gaussian Blurred Background: Blurs the background for a professional effect.
+4. Custom Background Image: Replaces the background with an image chosen by the user.
+
+(use keys 1, 2, 3, 4 to switch between the different modes)
 
 ## Deactivating the Virtual Environment
 When you're done working on the project, deactivate the virtual environment:
