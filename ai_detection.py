@@ -6,6 +6,7 @@ from PIL import Image
 from tkinter import Tk, filedialog
 from utils import gaussian_blur
 
+# Load the pre-trained DeepLab model for segmentation
 def load_model():
     from torchvision.models.segmentation import DeepLabV3_MobileNet_V3_Large_Weights
     weights = DeepLabV3_MobileNet_V3_Large_Weights.COCO_WITH_VOC_LABELS_V1
@@ -13,6 +14,7 @@ def load_model():
     model.eval()
     return model
 
+# Preprocess input frames for the DeepLab model
 def preprocess_frame(frame):
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     input_image = Image.fromarray(frame_rgb)
@@ -23,17 +25,20 @@ def preprocess_frame(frame):
     input_tensor = preprocess(input_image)
     return input_tensor.unsqueeze(0)
 
+# Perform segmentation on the frame to extract the mask
 def segment_frame(model, input_batch, device):
     input_batch = input_batch.to(device)
     with torch.no_grad():
         output = model(input_batch)['out'][0]
     return output.argmax(0).byte().cpu().numpy()
 
+# Smooth the mask edges using Gaussian blur
 def smooth_mask(mask, kernel_size=21, sigma=10):
     mask_float = mask.astype(np.float32)
     blurred = cv2.GaussianBlur(mask_float, (kernel_size, kernel_size), sigma)
     return np.clip(blurred, 0, 1)
 
+# Open a file dialog to select a custom background image
 def select_background_image():
     Tk().withdraw()
     file_path = filedialog.askopenfilename(
@@ -44,12 +49,14 @@ def select_background_image():
         return cv2.imread(file_path)
     return None
 
+# Initialize the color picker sliders for background customization
 def initialize_color_picker():
     cv2.namedWindow('Background Color')
     cv2.createTrackbar('R', 'Background Color', 0, 255, lambda x: None)
     cv2.createTrackbar('G', 'Background Color', 0, 255, lambda x: None)
     cv2.createTrackbar('B', 'Background Color', 0, 255, lambda x: None)
 
+# Retrieve the current background color from the sliders
 def get_bg_color():
     r = cv2.getTrackbarPos('R', 'Background Color')
     g = cv2.getTrackbarPos('G', 'Background Color')
@@ -65,6 +72,7 @@ def main():
     if not cap.isOpened():
         return
 
+    # Display available options to the user
     print("Commands:")
     print(" 1 - Segmentation overlay (person highlighted, original background)")
     print(" 2 - Person on a custom solid color background with smooth edges")
@@ -90,6 +98,7 @@ def main():
 
         smoothed_mask = smooth_mask(person_mask_resized, kernel_size=21, sigma=10)
 
+        # Handle different options for background modification
         if selected_option == '1':
             mask_rgb = np.zeros_like(frame)
             mask_rgb[person_mask_resized == 1] = [0, 128, 255]
