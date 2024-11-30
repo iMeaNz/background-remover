@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from concurrent.futures import ThreadPoolExecutor
 from utils import rgb_to_grayscale, apply_binary_mask, gaussian_blur
 
 def main():
@@ -17,7 +16,13 @@ def main():
     fps = int(cap.get(cv2.CAP_PROP_FPS)) or 30
     total_frames = fps * 10
 
-    print(f"Starting to average the first {10} seconds of frames...")
+    print("Step 1: Calculating the background model.")
+    print("- The webcam feed will display for 10 seconds.")
+    print("- These frames will be averaged to compute a reference background.")
+    print("- Use q to stop the process early.")
+
+    # Inform the user about the initial setup
+    input("Press Enter to begin averaging frames for background calculation...")
 
     while frame_count < total_frames:
         ret, frame = cap.read()
@@ -26,7 +31,6 @@ def main():
             print("Error: Failed to capture frame.")
             break
 
-        # Here we convert the frame to float for a better averaging calculation
         frame_float = frame.astype(np.float32)
 
         if buffer is None:
@@ -38,17 +42,20 @@ def main():
         cv2.imshow('Webcam', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
+            print("Averaging process interrupted by user.")
             break
 
     if frame_count > 0:
         average_frame = (buffer / frame_count).astype(np.uint8)
         grayscale_buffer = rgb_to_grayscale(average_frame)
-        print(f"Finished averaging {frame_count} frames.")
+        print(f"Background model computed from {frame_count} frames.")
 
-    threshold = 25 
-    print("Resuming webcam feed, showing differences...")
-    print("Press UP/DOWN to adjust the threshold. Press 'q' to quit.")
+    print("\nStep 2: Live difference detection.")
+    print("- The webcam feed will now show areas of motion or change.")
+    print("- Adjust sensitivity using UP/DOWN arrows.")
+    print("- Press 'q' to quit at any time.")
 
+    threshold = 25
     while True:
         ret, frame = cap.read()
 
@@ -66,7 +73,6 @@ def main():
 
         cv2.imshow('Difference Mask', thresholded_mask)
 
-        # Handle keyboard input for threshold adjustment
         key = cv2.waitKey(1) & 0xFF
         if key == ord('q'):
             break
