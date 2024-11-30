@@ -46,37 +46,37 @@ def create_gaussian_kernel(size, sigma):
     kernel /= kernel.sum()  # Normalize
     return kernel
 
-    def gaussian_blur(image, kernel_size=5, sigma=1.0):
-        """
-        Apply a separable Gaussian blur to a grayscale image.
-        :param image: Input image (2D grayscale).
-        :param kernel_size: Size of the Gaussian kernel (must be odd).
-        :param sigma: Standard deviation of the Gaussian kernel.
-        :return: Blurred image.
-        """
-        if kernel_size % 2 == 0:
-            raise ValueError("Kernel size must be odd.")
-        if sigma <= 0:
-            raise ValueError("Sigma must be greater than zero.")
+def gaussian_blur(image, kernel_size=5, sigma=1.0):
+    """
+    Apply a separable Gaussian blur to a grayscale image.
+    :param image: Input image (2D grayscale).
+    :param kernel_size: Size of the Gaussian kernel (must be odd).
+    :param sigma: Standard deviation of the Gaussian kernel.
+    :return: Blurred image.
+    """
+    if kernel_size % 2 == 0:
+        raise ValueError("Kernel size must be odd.")
+    if sigma <= 0:
+        raise ValueError("Sigma must be greater than zero.")
 
-        kernel = create_gaussian_kernel(kernel_size, sigma)
+    kernel = create_gaussian_kernel(kernel_size, sigma)
 
-        if image.ndim != 2:
-            raise ValueError("Image must be 2D (grayscale) or 3D (color).")
-        
-        k = len(kernel) // 2
-        padded_image = np.pad(image, ((k, k), (k, k)), mode='reflect')
-        
-        temp_result = np.zeros_like(image, dtype=np.float32)
-        for i in range(image.shape[0]):
-            temp_result[i, :] = np.convolve(padded_image[i, :], kernel, mode='valid')
+    if image.ndim != 2:
+        raise ValueError("Image must be 2D (grayscale) or 3D (color).")
 
-        padded_temp = np.pad(temp_result, ((k, k), (0, 0)), mode='reflect')
-        blurred_image = np.zeros_like(image, dtype=np.float32)
-        for j in range(image.shape[1]):
-            blurred_image[:, j] = np.convolve(padded_temp[:, j], kernel, mode='valid')
+    k = len(kernel) // 2
+    padded_image = np.pad(image, ((k, k), (k, k)), mode='reflect')
 
-        return np.clip(blurred_image, 0, 255).astype(np.uint8)
+    temp_result = np.zeros_like(image, dtype=np.float32)
+    for i in range(image.shape[0]):
+        temp_result[i, :] = np.convolve(padded_image[i, :], kernel, mode='valid')
+
+    padded_temp = np.pad(temp_result, ((k, k), (0, 0)), mode='reflect')
+    blurred_image = np.zeros_like(image, dtype=np.float32)
+    for j in range(image.shape[1]):
+        blurred_image[:, j] = np.convolve(padded_temp[:, j], kernel, mode='valid')
+
+    return np.clip(blurred_image, 0, 255).astype(np.uint8)
 
 def slightly_optimized_gaussian_blur(image, kernel_size=5, sigma=1.0):
     """
